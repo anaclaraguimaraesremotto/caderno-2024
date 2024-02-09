@@ -19,7 +19,7 @@ As Classes são projetos de um objeto que permite armazenar propriedades e méto
 - Possuem membros (características e ações);
 - visibilidade + palavra reservada + class + nome da classe
 
-```
+``` Java
 public class Teste{
 //ATRIBUTOS OU PROPRIEDADES
 //MÉTODOS
@@ -28,7 +28,7 @@ public class Teste{
 
 ==Exemplo de Classe com Objeto:==
 
-```
+``` Java
 public class Cao{
 
 	// Variáveis de instancia: estado do cão
@@ -58,7 +58,7 @@ public class Cao{
 
 Agora que temos nossa classe Cao definida, vamos atribuir característica aos objetos utilizando uma Classe teste:
 
-```
+``` Java
 public class TesteCao {
 	public static void main(String[] args) {
 	
@@ -94,7 +94,7 @@ O Construtor de um Objeto é um método especial pois inicializa seus atributos 
 
 Vamos criar um Construtor que recebe um parametro de uma String que será o argumento de entrada na Classe de teste:
 
-```
+``` Java
 public class Cao{
 
 	String nomeCao;
@@ -110,7 +110,7 @@ public class Cao{
 }
 ```
 
-```
+``` Java
 public class TesteCao {
 	public static void main(String[] args) {
 	
@@ -135,7 +135,7 @@ No Encapsulamento, os atributos da classe são do tipo ***private***, sendo nece
 
 ==Exemplo de Encapsulamento com a Classe Cao:==
 
-```
+``` Java
 public class Cao{
 
 	private String nomeCao;
@@ -161,7 +161,7 @@ public class Cao{
 
 Vamos colocar os métodos Getters dentro do System.out.println para gerar saída de resultado: 
 
-```
+``` Java
 public class TesteCao {
 	public static void main(String[] args) {
 	
@@ -192,7 +192,7 @@ No modelo acima, podemos observar as **subclasses** ==Pessoa Física== e ==Pesso
 
 Superclasse Funcionário que servirá de base para as subclasses utilizarem seus atributos e métodos:
 
-```
+``` Java
 public class Funcionario {
     private String nome;
     private double salario;
@@ -222,7 +222,7 @@ public class Funcionario {
 
 Subclasse Gerente:
 
-```
+``` Java
 public class Gerente extends Funcionario {
     private String usuario;
     private String senha;
@@ -253,7 +253,7 @@ public class Gerente extends Funcionario {
 
 Subclasse Secretária:
 
-```
+``` Java
 public class Secretaria extends Funcionario {
     private int ramal;
 
@@ -270,7 +270,7 @@ public class Secretaria extends Funcionario {
 Observe que não foi preciso criar em todas as classes os atributos *nome* e *salário*.
 Agora vamos utilizar uma nova Classe Teste:
 
-```
+``` Java
 public class TesteFuncionario {
 
     public static void main(String[] args) {

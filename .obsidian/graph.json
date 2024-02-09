@@ -1,0 +1,37 @@
+{
+  "collapse-filter": false,
+  "search": "",
+  "showTags": true,
+  "showAttachments": false,
+  "hideUnresolved": false,
+  "showOrphans": true,
+  "collapse-color-groups": false,
+  "colorGroups": [
+    {
+      "query": "Java path:\"Java Advanced\"  ",
+      "color": {
+        "a": 1,
+        "rgb": 14048348
+      }
+    },
+    {
+      "query": "QA path:\"Quality Assurance\"  ",
+      "color": {
+        "a": 1,
+        "rgb": 14048431
+      }
+    }
+  ],
+  "collapse-display": false,
+  "showArrow": false,
+  "textFadeMultiplier": 0,
+  "nodeSizeMultiplier": 0.89968814968815,
+  "lineSizeMultiplier": 1.42941787941788,
+  "collapse-forces": false,
+  "centerStrength": 0.445945945945946,
+  "repelStrength": 9.16839916839917,
+  "linkStrength": 0.470893970893971,
+  "linkDistance": 259,
+  "scale": 0.8137713085498721,
+  "close": false
+}
