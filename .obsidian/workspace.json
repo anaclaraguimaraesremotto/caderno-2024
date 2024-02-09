@@ -11,8 +11,22 @@
             "id": "5ddf977b0e786c9a",
             "type": "leaf",
             "state": {
-              "type": "empty",
-              "state": {}
+              "type": "release-notes",
+              "state": {
+                "currentVersion": "1.5.3"
+              }
+            }
+          },
+          {
+            "id": "0daccc5e99b44091",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "Java Advanced/Orientada a Objetos (POO) 08-02.md",
+                "mode": "source",
+                "source": false
+              }
             }
           },
           {
@@ -21,7 +35,7 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Software Quality Assurance (SQA) 06-02.md",
+                "file": "Quality Assurance/Software Quality Assurance (SQA) 06-02.md",
                 "mode": "source",
                 "source": false
               }
@@ -78,7 +92,8 @@
       }
     ],
     "direction": "horizontal",
-    "width": 312.5
+    "width": 200,
+    "collapsed": true
   },
   "right": {
     "id": "67279b66f821b09b",
@@ -94,7 +109,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "Software Quality Assurance (SQA) 06-02.md",
+                "file": "Java Advanced/Orientada a Objetos (POO) 08-02.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -111,7 +126,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "Software Quality Assurance (SQA) 06-02.md",
+                "file": "Java Advanced/Orientada a Objetos (POO) 08-02.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -134,7 +149,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "Software Quality Assurance (SQA) 06-02.md"
+                "file": "Java Advanced/Orientada a Objetos (POO) 08-02.md"
               }
             }
           }
@@ -155,10 +170,13 @@
       "command-palette:Abrir paleta de comando": false
     }
   },
-  "active": "1dbd4495299fca41",
+  "active": "0daccc5e99b44091",
   "lastOpenFiles": [
-    "Software Quality Assurance (SQA) 06-02.md",
+    "Quality Assurance/Software Quality Assurance (SQA) 06-02.md",
+    "Java Advanced/Orientada a Objetos (POO) 08-02.md",
+    "Pasted image 20240209041502.png",
     "Sem título",
+    "Java Advanced",
     "Quality Assurance"
   ]
 }
