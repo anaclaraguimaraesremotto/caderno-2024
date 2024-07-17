@@ -1,0 +1,3 @@
+- [http://docs.intersystems.com/latest/csp/docbook/DocBook.UI.Page.cls?KEY=TCOS](http://docs.intersystems.com/latest/csp/docbook/DocBook.UI.Page.cls?KEY=TCOS)
+- [http://docs.intersystems.com/latest/csp/docbook/DocBook.UI.Page.cls?KEY=RCOS](http://docs.intersystems.com/latest/csp/docbook/DocBook.UI.Page.cls?KEY=RCOS)
+- https://www.intersystems.com/wp-content/uploads/sites/7/brochura-Core-Manual-de-Tecnologia-Cache.pdf
