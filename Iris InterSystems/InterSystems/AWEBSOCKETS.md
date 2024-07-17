@@ -115,7 +115,6 @@ Esse método lê até caracteres *len* do cliente. Se a chamada for bem-sucedida
 
 **Write()** 
 ```  Method Write(data As %String) As %Status```
-<<<<<<< HEAD:Iris InterSystems/InterSystems/AWEBSOCKETS.md
 
 Esse método grava dados no cliente.
 
