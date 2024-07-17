@@ -25,7 +25,7 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Caché/Sumário.md",
+                "file": "Caché/Tipos de dados.md",
                 "mode": "source",
                 "source": false
               }
@@ -82,7 +82,8 @@
       }
     ],
     "direction": "horizontal",
-    "width": 200
+    "width": 200,
+    "collapsed": true
   },
   "right": {
     "id": "67279b66f821b09b",
@@ -98,7 +99,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "Caché/Sumário.md",
+                "file": "Caché/Tipos de dados.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -115,7 +116,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "Caché/Sumário.md",
+                "file": "Caché/Tipos de dados.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -138,7 +139,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "Caché/Sumário.md"
+                "file": "Caché/Tipos de dados.md"
               }
             }
           }
@@ -161,11 +162,12 @@
   },
   "active": "477d1d7ae4a89766",
   "lastOpenFiles": [
-    "Caché/Links Estudo.md",
+    "Caché/Tipos de dados.md",
+    "Java Advanced/Sumário.md",
     "Caché/Sumário.md",
+    "Caché/Links Estudo.md",
     "Caché/Comandos.md",
     "Untitled",
-    "Java Advanced/Sumário.md",
     "Caché/Funções nativas do Caché.md",
     "Caché/Untitled",
     "Caché",

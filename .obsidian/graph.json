@@ -5,10 +5,10 @@
   "showAttachments": false,
   "hideUnresolved": false,
   "showOrphans": true,
-  "collapse-color-groups": false,
+  "collapse-color-groups": true,
   "colorGroups": [
     {
-      "query": "Java path:\"Java Advanced\"  ",
+      "query": "path:\"Java Advanced\"  ",
       "color": {
         "a": 1,
         "rgb": 14048348
@@ -19,6 +19,13 @@
       "color": {
         "a": 1,
         "rgb": 14048431
+      }
+    },
+    {
+      "query": "path:Caché  ",
+      "color": {
+        "a": 1,
+        "rgb": 6055126
       }
     }
   ],
@@ -32,6 +39,6 @@
   "repelStrength": 9.16839916839917,
   "linkStrength": 0.470893970893971,
   "linkDistance": 259,
-  "scale": 0.8137713085498721,
-  "close": true
+  "scale": 0.8137713085498725,
+  "close": false
 }
