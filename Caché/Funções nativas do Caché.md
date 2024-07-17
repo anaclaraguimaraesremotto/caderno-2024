@@ -63,6 +63,6 @@ Verifica se uma variável está definida, contém dados e se possui descendentes
 Retorna o primeiro subscrito válido a partir do especificado.
 	`Set x(1)=10, x(5)=50, x(9)=30
 	`WRITE $ORDER(x(""))
-	**Resultado: 10**
+	**Resultado: 10
 	`WRITE $ORDER(x(5))
 	**Resultado: 50**
