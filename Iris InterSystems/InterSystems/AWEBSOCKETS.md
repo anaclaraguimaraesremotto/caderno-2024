@@ -1,3 +1,4 @@
+## WebSockets (RFC 6455)
 O protocolo WebSockets (RFC 6455) atende ao requisito fundamental de permitir que os servidores enviem mensagens proativamente por push para os clientes, fornecendo um canal de comunicação full-duplex orientado a mensagens entre um cliente e seu servidor. O protocolo é projetado para operar e, portanto, ser protegido sobre o canal TCP padrão já estabelecido entre o cliente e o servidor e usado para suportar o protocolo HTTP entre um navegador da Web e um servidor da Web. 
 O protocolo WebSockets e sua API são padronizados pelo W3C e a parte do cliente é incluída no HTML 5. 
 Espera-se que os intermediários, como proxies e firewalls, estejam cientes e ofereçam suporte ao protocolo WebSockets.
@@ -114,4 +115,133 @@ Esse método lê até caracteres *len* do cliente. Se a chamada for bem-sucedida
 
 **Write()** 
 ```  Method Write(data As %String) As %Status```
+
 Esse método grava dados no cliente.
+
+**EndServer()**
+```Method EndServer() As %Status```
+
+Esse método termina normalmente o servidor WebSocket fechando a conexão com o cliente
+
+**OpenServer()**
+```Method OpenServer(WebSocketID As %String = "") As %Status```
+
+Esse método abre um WebSocket Server existente. Somente um WebSocket operando de forma assíncrona (*SharedConnection=1*) pode ser acessado usando esse método.
+
+### WebSocket Server Properties 
+
+Você pode definir ou obter as seguintes propriedades de dentro desses retornos de chamada: 
+
+#### SharedConnection (default: 0)
+	Essa propriedade determina se a comunicação entre o cliente e o servidor WebSocket deve ser por meio de uma conexão de Gateway da Web dedicada ou assíncrona por um pool de conexões de Gateway da Web compartilhadas. Essa propriedade deve ser definida no método **OnPreServer()** e pode ser definida da seguinte maneira: 
+
+- *SharedConnection=0* O servidor WebSocket se comunica de forma síncrona com o cliente por meio de uma conexão de gateway da Web dedicada. Neste modo de operação, a conexão de hospedagem é efetivamente 'privada' para o WebSocket Server do aplicativo.
+- *SharedConnection=1* O servidor WebSocket se comunica de forma assíncrona com o cliente por meio de um pool de conexões compartilhadas do Web Gateway. Além disso, o soquete expira quando não há atividade para o período de tempo limite da sessão CSP
+
+#### WebSocketID
+Essa propriedade representa a identidade exclusiva do WebSocket. 
+
+#### SessionId
+Essa propriedade representa a ID de Sessão CSP de hospedagem na qual o WebSocket foi criado. 
+
+#### BinaryData
+Essa propriedade instrui o Web Gateway a ignorar a funcionalidade que, de outra forma, interpretaria o fluxo de dados transmitido como texto codificado em UTF-8 e definiria os campos de dados binários apropriados no cabeçalho do quadro WebSocket. 
+Isso deve ser definido como 1 antes de gravar um fluxo de dados binários no cliente. 
+
+Por exemplo: 
+```SET .. BinaryData = 1```
+
+## WebSockets Server Example
+A classe de servidor WebSocket simples a seguir aceita uma conexão de entrada de um cliente e simplesmente ecoa os dados recebidos. 
+O tempo limite é definido como 10 segundos e cada vez que o tempo limite do método Read() uma mensagem é gravada no cliente. Isso ilustra um dos principais conceitos subjacentes aos WebSockets: iniciar uma troca de mensagens com o cliente a partir do servidor
+Finalmente, o WebSocket fecha normalmente se o cliente (ou seja, usuário) envia a saída da cadeia de caracteres.
+
+```
+Method OnPreServer() As %Status 
+{ 
+	Quit $$$OK 
+} 
+
+Method Server() As %Status 
+{ 
+	Set timeout=10 
+	For { 
+		Set len=32656 
+		Set data=..Read(.len, .status, timeout) 
+		If $$$ISERR(status) { 
+				If $$$GETERRORCODE(status) = $$$CSPWebSocketClosed { 
+					Quit 
+				} 
+			If $$$GETERRORCODE(status) = $$$CSPWebSocketTimeout { 
+				Set status=..Write(“Server timed-out at “_$Horolog) 
+			} 
+		} 
+		else { 
+			If data="exit" Quit 
+			Set status=..Write(data) 
+		} 
+	} 
+	Set status=..EndServer() 
+	Quit $$$OK 
+} 
+
+Method OnPostServer() As %Status 
+{ 
+	Quit $$$OK 
+}
+```
+
+## WebSockets Server Asynchronous Operation
+
+O exemplo fornecido na seção anterior ilustra um servidor WebSocket operando de forma síncrona com o cliente em uma conexão IRIS InterSystems dedicada. Quando essa conexão é estabelecida, ela é rotulada como *WebSocket* na coluna de status do formulário Status dos Sistemas de Gateways da Web. Com esse modo, o WebSocket está operando dentro do contexto de segurança da sessão da Web de hospedagem e todas as propriedades associadas a essa sessão podem ser facilmente acessadas. 
+Com o modo de operação assíncrono (*SharedConnection=1*), a conexão de hospedagem é liberada assim que o objeto WebSocket é criado e o diálogo subsequente com o cliente é sobre o pool de conexões compartilhadas: as mensagens do cliente chegam por meio do pool convencional de conexões de gateway da Web para o IRIS da InterSystems e as mensagens para o cliente são despachadas pelo pool de conexões de servidor que foram estabelecidas entre o gateway da Web e o IRIS da InterSystems. 
+No modo assíncrono, o WebSocket Server é desanexado da sessão da Web principal: a propriedade SessionId mantém o valor da ID da Sessão de hospedagem, mas uma instância do objeto de sessão não é criada automaticamente. 
+O exemplo fornecido anteriormente pode ser executado de forma assíncrona simplesmente definindo a propriedade SharedConnection no método OnPreServer(). No entanto, não é necessário ter um processo IRIS InterSystems permanentemente associado ao WebSocket. O método **Server()** pode sair (e o processo de hospedagem parar) sem fechar o WebSocket. Desde que o WebSocketID tenha sido mantido, o WebSocket pode ser subsequentemente aberto em um processo IRIS InterSystems diferente e a comunicação com o cliente é retomada. 
+No exemplo a seguir, *MYAPP. SAVE()* e *MYAPP. RETRIEVE()* são espaços reservados para código personalizado que você cria para salvar e recuperar uma ID de WebSocket.
+
+Exemplo:
+```
+Class MyApp.MyWebSocketServer Extends %CSP.WebSocket 
+{ 
+	Method OnPreServer() As %Status 
+	{ 
+		MYAPP.SAVE(..WebSocketID) 
+		Set ..SharedConnection = 1 
+		Quit $$$OK 
+	} 
+	
+	Method Server() As %Status 
+	{ 
+		Quit $$$OK 
+	} 
+	
+	Method OnPostServer() As %Status 
+	{ 
+		Quit $$$OK 
+	} 
+}
+```
+
+Observe que o WebSocketID é mantido para uso subsequente no método OnPreServer(). Observe também a configuração da propriedade SharedConnection no método OnPreServer() e que o método Server() simplesmente sai. 
+Recuperando subsequentemente o WebSocketID: 
+```Set WebSocketID = MYAPP.RETRIEVE()```
+
+Restabelecimento de vínculo com o cliente:
+```
+Set ws=##class(%CSP.WebSocket).%New() 
+Set %status = ws.OpenServer(WebSocketID)
+```
+
+Leitura e escrita para o cliente:
+``` 
+Set %status=ws.Write(message) 
+Set data=ws.Read(.len, .%status, timeout)
+```
+
+Finalmente, fechando o WebSocket do lado do servidor:
+```Set %status=ws.EndServer()```
+
+## See Also
+
+- RFC 6455
+- %CSP.WebSocket in the class reference
