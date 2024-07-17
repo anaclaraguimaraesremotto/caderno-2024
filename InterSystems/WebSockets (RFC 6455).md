@@ -107,7 +107,7 @@ Você pode invocar os seguintes métodos de dentro desses retornos de chamada:
 **Read()**
 ``` Method Read(ByRef len As %Integer = 32656, ByRef sc As %Status, timeout As %Integer = 86400) As %String ``` 
 
-Esse método lê até caracteres *len* do cliente. Se a chamada for bem-sucedida, o status (*sc*) será retornado como *$OK*; caso contrário, um dos seguintes códigos de erro é retornado:
+Esse método lê até caracteres *len* do cliente. Se a chamada for bem-sucedida, o status (*sc*) será retornado como *$$$OK*; caso contrário, um dos seguintes códigos de erro é retornado:
 
 - ```$$$CSPWebSocketTimeout``` O método Read atingiu o tempo limite
 - ```$$$CSPWebSocketClosed``` O cliente encerrou o WebSocket.
