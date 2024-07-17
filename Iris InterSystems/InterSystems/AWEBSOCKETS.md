@@ -134,7 +134,7 @@ Esse método abre um WebSocket Server existente. Somente um WebSocket operando d
 Você pode definir ou obter as seguintes propriedades de dentro desses retornos de chamada: 
 
 #### SharedConnection (default: 0)
-	Essa propriedade determina se a comunicação entre o cliente e o servidor WebSocket deve ser por meio de uma conexão de Gateway da Web dedicada ou assíncrona por um pool de conexões de Gateway da Web compartilhadas. Essa propriedade deve ser definida no método **OnPreServer()** e pode ser definida da seguinte maneira: 
+Essa propriedade determina se a comunicação entre o cliente e o servidor WebSocket deve ser por meio de uma conexão de Gateway da Web dedicada ou assíncrona por um pool de conexões de Gateway da Web compartilhadas. Essa propriedade deve ser definida no método **OnPreServer()** e pode ser definida da seguinte maneira: 
 
 - *SharedConnection=0* O servidor WebSocket se comunica de forma síncrona com o cliente por meio de uma conexão de gateway da Web dedicada. Neste modo de operação, a conexão de hospedagem é efetivamente 'privada' para o WebSocket Server do aplicativo.
 - *SharedConnection=1* O servidor WebSocket se comunica de forma assíncrona com o cliente por meio de um pool de conexões compartilhadas do Web Gateway. Além disso, o soquete expira quando não há atividade para o período de tempo limite da sessão CSP
@@ -246,6 +246,4 @@ Finalmente, fechando o WebSocket do lado do servidor:
 
 - RFC 6455
 - %CSP.WebSocket in the class reference
-=======
-Esse método grava dados no cliente.
->>>>>>> 2e704dfd49aa28d2aeaf601ed8b7fa1a74a14ab6:InterSystems/WebSockets (RFC 6455).md
+
