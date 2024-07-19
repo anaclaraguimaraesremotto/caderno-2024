@@ -27,6 +27,13 @@
         "a": 1,
         "rgb": 6055126
       }
+    },
+    {
+      "query": "path:\"Iris InterSystems\"  ",
+      "color": {
+        "a": 1,
+        "rgb": 6084188
+      }
     }
   ],
   "collapse-display": false,
@@ -39,6 +46,6 @@
   "repelStrength": 10.2083333333333,
   "linkStrength": 0.59375,
   "linkDistance": 250,
-  "scale": 0.07643695230614433,
-  "close": false
+  "scale": 0.580443106574784,
+  "close": true
 }

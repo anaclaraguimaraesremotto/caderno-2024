@@ -29,3 +29,5 @@
 	4. [[Links Estudo]]
 2. [[AWEBSOCKETS]]
 	- WebSockets (RFC 6455)
+3. [[EJMS - Using Java Messaging Service in Interoperability Productions]]
+	- Java Messaging Service

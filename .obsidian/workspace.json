@@ -13,7 +13,7 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Iris InterSystems/InterSystems/AWEBSOCKETS.md",
+                "file": "Iris InterSystems/InterSystems/EJMS - Using Java Messaging Service in Interoperability Productions.md",
                 "mode": "source",
                 "source": false
               }
@@ -69,8 +69,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 200,
-    "collapsed": true
+    "width": 200
   },
   "right": {
     "id": "67279b66f821b09b",
@@ -86,7 +85,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "Iris InterSystems/InterSystems/AWEBSOCKETS.md",
+                "file": "Iris InterSystems/InterSystems/EJMS - Using Java Messaging Service in Interoperability Productions.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -103,7 +102,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "Iris InterSystems/InterSystems/AWEBSOCKETS.md",
+                "file": "Iris InterSystems/InterSystems/EJMS - Using Java Messaging Service in Interoperability Productions.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -126,7 +125,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "Iris InterSystems/InterSystems/AWEBSOCKETS.md"
+                "file": "Iris InterSystems/InterSystems/EJMS - Using Java Messaging Service in Interoperability Productions.md"
               }
             }
           }
@@ -149,17 +148,19 @@
   },
   "active": "74d49f4f8b43f302",
   "lastOpenFiles": [
-    "2024-07-17.md",
     "Iris InterSystems/Sumário.md",
-    "Iris InterSystems/Caché/Tipos de dados.md",
+    "Java Advanced/Sumário.md",
+    "Iris InterSystems/InterSystems/EJMS - Using Java Messaging Service in Interoperability Productions.md",
     "Iris InterSystems/InterSystems/AWEBSOCKETS.md",
+    "Iris InterSystems/Caché/Funções nativas do Caché.md",
     "Iris InterSystems/Caché/Comandos.md",
+    "2024-07-19.md",
+    "2024-07-17.md",
+    "Iris InterSystems/Caché/Tipos de dados.md",
     "Iris InterSystems",
     "Untitled 1",
     "Iris InterSystems/InterSystems",
-    "Iris InterSystems/Caché/Funções nativas do Caché.md",
     "Iris InterSystems/Caché/Links Estudo.md",
-    "Java Advanced/Sumário.md",
     "Caché/Untitled",
     "Iris InterSystems/Caché",
     "Java Advanced/Orientada a Objetos (POO) 08-02.md",
