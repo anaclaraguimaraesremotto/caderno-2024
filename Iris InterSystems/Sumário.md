@@ -43,3 +43,5 @@
 	- Securing Your Instance
 9. [[ASCWL]]
 	- Secure Custom Web Application Logins
+10. [[AECW]]
+	- Using the Amazon CloudWatch Adapter

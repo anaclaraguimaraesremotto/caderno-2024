@@ -13,7 +13,7 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Iris InterSystems/InterSystems/ASCWL.md",
+                "file": "Iris InterSystems/Sumário.md",
                 "mode": "source",
                 "source": false
               }
@@ -69,8 +69,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 200,
-    "collapsed": true
+    "width": 200
   },
   "right": {
     "id": "67279b66f821b09b",
@@ -86,7 +85,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "Iris InterSystems/InterSystems/ASCWL.md",
+                "file": "Iris InterSystems/Sumário.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -103,7 +102,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "Iris InterSystems/InterSystems/ASCWL.md",
+                "file": "Iris InterSystems/Sumário.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -126,7 +125,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "Iris InterSystems/InterSystems/ASCWL.md"
+                "file": "Iris InterSystems/Sumário.md"
               }
             }
           }
@@ -149,6 +148,8 @@
   },
   "active": "3026f945fc7ca079",
   "lastOpenFiles": [
+    "Iris InterSystems/InterSystems/AECW.md",
+    "Pasted image 20240724155543.png",
     "Iris InterSystems/Sumário.md",
     "Iris InterSystems/InterSystems/ASCWL.md",
     "Iris InterSystems/InterSystems/ASECURING.md",
@@ -184,7 +185,6 @@
     "Java Advanced/Orientada a Objetos (POO) pt2.md",
     "Sem título.canvas",
     "Quality Assurance/Software Quality Assurance (SQA) 06-02.md",
-    "Pasted image 20240209041502.png",
     "Sem título",
     "Java Advanced",
     "Quality Assurance"
