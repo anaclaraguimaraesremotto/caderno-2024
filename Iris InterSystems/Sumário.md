@@ -35,4 +35,5 @@
 	- Overview of Authentication Mechanisms
 5. [[GUNITTEST]]
 	- The %UnitTest Framework for InterSystems IRIS
-
+6. [[AENCRYPT]]
+	- Encryption
