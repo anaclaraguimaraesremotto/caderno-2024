@@ -31,3 +31,6 @@
 	- WebSockets (RFC 6455)
 3. [[EJMS - Using Java Messaging Service in Interoperability Productions]]
 	- Java Messaging Service
+4. [[GAUTHN]]
+	- Overview of Authentication Mechanisms
+
