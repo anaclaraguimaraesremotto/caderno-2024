@@ -1,0 +1,12 @@
+# Securing Your Instance
+
+## Security Strategy
+O melhor momento para começar a planejar a proteção de sua instância do InterSystems IRIS® ocorre antes de realizar a instalação inicial. A seção Prepare-se para o InterSystems Security descreve alguns problemas que você deve considerar antes de instalar a instância do InterSystems IRIS®. Em geral, para sistemas de produção, a InterSystems recomenda que você comece com o nível mais alto possível de segurança e, em seguida, conceda privilégios apenas quando necessário. Um bom lugar para começar é executando uma instalação com a configuração de segurança inicial de Bloqueado e, em seguida, ajustando a partir daí. 
+
+Depois de instalar o InterSystems IRIS, ou se você já tiver instalado sua instância, consulte Reforçar a segurança de uma instância para obter orientação sobre como restringir o acesso à instância e reduzir a superfície de ataque. Se você executou a instalação usando a configuração de segurança inicial Bloqueado, algumas das etapas descritas aqui já foram executadas para você. No entanto, você ainda deve revisar seu conteúdo para saber as etapas adicionais que podem ser executadas para restringir sua instância. 
+
+O Portal de Gerenciamento InterSystems IRIS inclui o Security Advisor, que fornece uma lista de áreas que devem ser examinadas para sua instância para ver se devem ser reforçadas ainda mais. Para cada uma dessas áreas, o Supervisor de Segurança fornece um link útil para a página apropriada no Portal de Gerenciamento para que a configuração relacionada possa ser ajustada, se necessário. 
+
+Obviamente, a execução de um sistema seguro requer o fortalecimento das superfícies de ataque além do executável InterSystems IRIS. O InterSystems IRIS também usa outros processos e recursos que podem ser alvos de comportamento malicioso. A seção Processos Seguros da InterSystems e Recursos do Sistema Operacional discute esses tópicos e fornece diretrizes para você seguir. 
+
+Por fim, a Lista de verificação para proteger sua implantação é dividida em várias categorias de segurança mais amplas, como rede, sistema operacional ou servidor Web, e fornece uma lista de verificação para cada categoria que sua organização pode usar para proteger sua implantação como um todo.

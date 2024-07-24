@@ -13,7 +13,7 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Iris InterSystems/InterSystems/ACLASSREF.md",
+                "file": "Iris InterSystems/InterSystems/ASECURING.md",
                 "mode": "source",
                 "source": false
               }
@@ -69,7 +69,8 @@
       }
     ],
     "direction": "horizontal",
-    "width": 200
+    "width": 200,
+    "collapsed": true
   },
   "right": {
     "id": "67279b66f821b09b",
@@ -85,7 +86,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "Iris InterSystems/InterSystems/ACLASSREF.md",
+                "file": "Iris InterSystems/InterSystems/ASECURING.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -102,7 +103,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "Iris InterSystems/InterSystems/ACLASSREF.md",
+                "file": "Iris InterSystems/InterSystems/ASECURING.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -125,7 +126,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "Iris InterSystems/InterSystems/ACLASSREF.md"
+                "file": "Iris InterSystems/InterSystems/ASECURING.md"
               }
             }
           }
@@ -149,12 +150,12 @@
   "active": "74d49f4f8b43f302",
   "lastOpenFiles": [
     "Iris InterSystems/Sumário.md",
+    "Iris InterSystems/InterSystems/ASECURING.md",
+    "Iris InterSystems/InterSystems/AENCRYPT.md",
+    "Iris InterSystems/InterSystems/ACLASSREF.md",
     "Java Advanced/Sumário.md",
     "ASECURING.md",
-    "Iris InterSystems/InterSystems/ACLASSREF.md",
-    "Iris InterSystems/InterSystems/AENCRYPT.md",
     "Iris InterSystems/InterSystems/ASCWL.md",
-    "Iris InterSystems/InterSystems/ASECURING.md",
     "Iris InterSystems/InterSystems/GUNITTEST.md",
     "Iris InterSystems/InterSystems/GAUTHN.md",
     "Pasted image 20240724152725.png",

@@ -40,6 +40,6 @@
 7. [[ACLASSREF]]
 	- Locating and Exploring Class Reference Documentation
 8. [[ASECURING]]
-	- 
+	- Securing Your Instance
 9. [[ASCWL]]
 	- 
