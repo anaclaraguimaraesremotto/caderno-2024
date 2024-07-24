@@ -33,6 +33,6 @@
 	- Java Messaging Service
 4. [[GAUTHN]]
 	- Overview of Authentication Mechanisms
-5. [[GAUTHN]]
+5. [[GUNITTEST]]
 	- The %UnitTest Framework for InterSystems IRIS
 

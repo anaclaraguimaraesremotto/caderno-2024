@@ -81,8 +81,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 200,
-    "collapsed": true
+    "width": 200
   },
   "right": {
     "id": "67279b66f821b09b",
@@ -161,20 +160,20 @@
   },
   "active": "74d49f4f8b43f302",
   "lastOpenFiles": [
-    "Iris InterSystems/InterSystems/GUNITTEST.md",
+    "Java Advanced/Sumário.md",
+    "Iris InterSystems/InterSystems/GAUTHN.md",
     "Iris InterSystems/Sumário.md",
+    "Iris InterSystems/InterSystems/GUNITTEST.md",
     "Pasted image 20240724152725.png",
     "Pasted image 20240724151209.png",
     "Pasted image 20240724151126.png",
     "Pasted image 20240724142545.png",
-    "Iris InterSystems/InterSystems/GAUTHN.md",
     "Pasted image 20240724134358.png",
     "Pasted image 20240724111602.png",
     "Iris InterSystems/InterSystems/EJMS - Using Java Messaging Service in Interoperability Productions.md",
     "Pasted image 20240724092428.png",
     "Pasted image 20240724091917.png",
     "Pasted image 20240724090219.png",
-    "Java Advanced/Sumário.md",
     "Iris InterSystems/InterSystems/AWEBSOCKETS.md",
     "Iris InterSystems/Caché/Funções nativas do Caché.md",
     "Iris InterSystems/Caché/Comandos.md",
