@@ -31,7 +31,8 @@
               }
             }
           }
-        ]
+        ],
+        "currentTab": 1
       }
     ],
     "direction": "vertical"
@@ -81,7 +82,8 @@
       }
     ],
     "direction": "horizontal",
-    "width": 200
+    "width": 200,
+    "collapsed": true
   },
   "right": {
     "id": "67279b66f821b09b",
@@ -97,7 +99,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "Iris InterSystems/Sumário.md",
+                "file": "Iris InterSystems/InterSystems/GAUTHN.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -114,7 +116,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "Iris InterSystems/Sumário.md",
+                "file": "Iris InterSystems/InterSystems/GAUTHN.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -137,7 +139,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "Iris InterSystems/Sumário.md"
+                "file": "Iris InterSystems/InterSystems/GAUTHN.md"
               }
             }
           }
@@ -158,14 +160,14 @@
       "canvas:Create new canvas": false
     }
   },
-  "active": "74d49f4f8b43f302",
+  "active": "e9faa3f14834632d",
   "lastOpenFiles": [
+    "Iris InterSystems/Sumário.md",
     "Iris InterSystems/InterSystems/EJMS - Using Java Messaging Service in Interoperability Productions.md",
     "Iris InterSystems/InterSystems/GAUTHN.md",
     "Pasted image 20240724092428.png",
     "Pasted image 20240724091917.png",
     "Pasted image 20240724090219.png",
-    "Iris InterSystems/Sumário.md",
     "Java Advanced/Sumário.md",
     "Iris InterSystems/InterSystems/AWEBSOCKETS.md",
     "Iris InterSystems/Caché/Funções nativas do Caché.md",
