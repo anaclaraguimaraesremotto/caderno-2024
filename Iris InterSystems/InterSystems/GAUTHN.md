@@ -658,15 +658,101 @@ Depois que o usuário se autentica, dois tópicos importantes são:
 -  The State of the System
 - Change Passwords
 #### The State of the System
+Qualquer usuário que seja inicialmente autenticado usando a autenticação delegada é listado na tabela de usuários na página Usuários **(Administração do Sistema > Segurança > Usuários)** como tendo um tipo de "Usuário delegado". Se um administrador de sistema criou explicitamente um usuário através do Portal de Gerenciamento (ou usando qualquer outro recurso nativo do InterSystems IRIS), esse usuário tem um tipo de "usuário de senha do InterSystems IRIS". Se um usuário tentar fazer login usando autenticação delegada e for autenticado com sucesso, o InterSystems IRIS determinará que esse usuário já existe como um usuário do InterSystems IRIS - não um usuário delegado - e, portanto, o login falhará. 
+
+**Observação:** para executar operações fragmentadas em um cluster fragmentado, um usuário delegado deve ter sido autenticado anteriormente em cada nó do cluster fragmentado por algum meio diferente de uma conexão de fragmentação interna. Para obter mais informações sobre sharding, consulte Escalonamento horizontal do InterSystems IRIS com Sharding.
 #### Change Passwords
-## Use LDAP with Delegated Authentication or Other Mechanisms
+A rotina ZAUTHENTICATE também inclui um ponto de entrada, ChangePassword, para incluir código para alterar a senha de um usuário. A assinatura desse ponto de entrada é: 
+ObjectScript 
+```ChangePassword(Username,NewPassword,OldPassword,Status) Public {}``` 
+onde: 
+-  Username é uma string que especifica o usuário cuja senha está sendo alterada. 
+- NewPassword é uma string que especifica o novo valor da senha do usuário. 
+- OldPassword é uma string que especifica o valor antigo da senha do usuário. 
+- Status (passado por referência) recebe um valor de status InterSystems IRIS indicando que a alteração da senha foi bem-sucedida ou especificando o erro que causou a falha da rotina
+### Use LDAP with Delegated Authentication or Other Mechanisms
+Você também pode usar o LDAP como parte de um sistema de autenticação personalizado (ou seja, com o recurso de autenticação delegada InterSystems IRIS). Para fazer isso, use chamadas para o %SYS. LDAP como parte do código de autenticação personalizado na rotina ZAUTHENTICATE. 
+
+A InterSystems fornece uma rotina de amostra, LDAP.mac, que demonstra essas chamadas. Essa rotina faz parte do exemplo SamplesSecurity no GitHub (https://github.com/intersystems/Samples-Security). 
+
+Além disso, se você precisar se autenticar no LDAP ou usar a autenticação de instância depois de coletar credenciais por meio de outro mecanismo, chame $SYSTEM. Security.Login com essas credenciais para autenticar o usuário.
 
 ## Two-Factor Authentication
 
-###
-###
-###
-###
+### Overview of Setting Up Two-Factor Authentication
+As principais etapas para configurar a autenticação de dois fatores são: 
+1. Habilite e configure a autenticação de dois fatores para a instância como um todo. Você pode configurar a instância para usar a autenticação de texto SMS, a autenticação TOTP ou ambas. Para obter detalhes sobre a autenticação TOTP, consulte Visão geral do TOTP de dois fatores. 
+2. Para autenticação de texto SMS, configure o(s) provedor(es) de serviços de telefonia móvel, se necessário. Isso inclui: 
+	 - Adicionar quaisquer provedores de serviços de telefonia móvel, se necessário, e não estiver incluído na lista de provedores padrão.
+	 - Alterar as informações de configuração conforme necessário para qualquer provedor existente (padrão ou adicionado). 
+3. Configure o serviço, conforme apropriado: 
+	- %Service_Bindings — Habilite a autenticação de dois fatores para o serviço e continue para a próxima etapa. 
+	- %Service_Console e %Service_Terminal — Basta ativar a autenticação de dois fatores para o serviço. Isso é tudo o que é necessário. 
+	- %Service_WebGateway — Não há um meio central de habilitar a autenticação de dois fatores para 
+	- %Service_WebGateway. Continue para a próxima etapa. 
+	
+	Você pode habilitar um ou ambos os tipos de autenticação para cada serviço. Para obter mais informações sobre serviços, consulte Serviços. 
+
+4. Configure aplicativos cliente-servidor e aplicativos da Web, conforme apropriado: 
+	- a. Para aplicativos cliente-servidor (aqueles que usam %Service_Bindings), adicione as chamadas apropriadas no aplicativo cliente para dar suporte a ele; esta é uma tarefa de programação que varia de acordo com o componente do lado do cliente em uso (por exemplo, Java, JDBC ou .NET, entre outros). 
+	**Importante:** a autenticação de dois fatores foi projetada para receber uma resposta de um usuário final humano em tempo real. Se o que o usuário final considera uma única sessão realmente consiste em várias sessões sequenciais, a solicitação repetida para o segundo fator pode resultar em uma experiência de usuário inesperadamente difícil. Com aplicativos cliente-servidor, o protocolo subjacente geralmente faz com que os clientes estabeleçam, desconectem e restabeleçam conexões repetidamente; Tal atividade torna o uso da autenticação de dois fatores menos desejável para esse tipo de aplicação.
+	 - b. Para aplicativos Web (aqueles que usam %Service_WebGateway), configure cada aplicativo para dar suporte a ele. 
+	 **Nota:** Para o Terminal InterSystems IRIS, que usa o serviço %Service_Console no Windows e o serviço %Service_Terminal em outros sistemas operacionais, não há necessidade de configuração além da configuração do lado do servidor; uma vez que o InterSystems IRIS controla a solicitação neles, ele simplesmente segue o prompt padrão (independentemente do mecanismo de autenticação) com o prompt de autenticação de dois fatores e processa a entrada do usuário final de acordo. 
+1. Se você estiver usando a autenticação delegada, modifique a rotina ZAUTHENTICATE.mac conforme necessário. Consulte Autenticação delegada para obter mais informações. 
+2. Configure cada usuário final para habilitar a autenticação de texto SMS ou a autenticação TOTP. Um usuário final pode ser configurado para usar os dois mecanismos, mas não pode ter os dois mecanismos habilitados simultaneamente
+#### Two-Factor TOTP Overview
+A autenticação de dois fatores usando uma autenticação de senha de uso único baseada em tempo (TOTP) funciona da seguinte maneira: 
+1. Selecione um dispositivo de autenticação ou um aplicativo que gere um TOTP e, em seguida, forneça-o ou certifique-se de que seus usuários o tenham. 
+2. Quando você configura um usuário final para autenticação TOTP de dois fatores, o sistema gera uma chave secreta, que é exibida como uma cadeia de bits aleatória codificada em base 32. O InterSystems IRIS e o usuário final compartilham essa chave secreta (e é por isso que ela é conhecida como segredo compartilhado). Tanto o InterSystems IRIS quanto o dispositivo ou aplicativo de autenticação do usuário final o usam para gerar o próprio TOTP, que serve como um código de verificação. O TOTP, que o usuário final insere em um campo ou prompt de código de verificação, é uma sequência de seis dígitos e uma nova é gerada em um intervalo regular (trinta segundos, por padrão). 
+3. No momento do login, depois que o usuário final fornece uma senha ao InterSystems IRIS, o InterSystems IRIS solicita adicionalmente o TOTP. O usuário final fornece o TOTP e, em seguida, conclui o processo de login.
+
+O usuário final pode obter a chave secreta do InterSystems IRIS de várias maneiras: 
+- Quando você configura a conta do usuário final para suportar a autenticação TOTP de dois fatores, a página Editar usuário do usuário final exibe a chave secreta do usuário final, bem como o nome do emissor e o nome da conta do usuário final. Ele também exibe um código QR que inclui todas essas informações (um código QR é um código legível por máquina, como o da foto abaixo). O usuário final pode inserir as informações em um dispositivo de autenticação ou aplicativo digitalizando o código ou inserindo as informações manualmente. 
+- Se você optar por mostrar ao usuário final sua chave secreta durante o login em um aplicativo da web ou sessão do Terminal (usando %Service_Console ou %Service_Terminal), poderá ativar esse comportamento selecionando o campo Exibir código QR de senha única baseada em tempo no próximo login na página Editar usuário. A sessão do Terminal exibirá o emissor, a conta e a chave secreta do usuário final. Um aplicativo da web exibirá o emissor, a conta e a chave secreta do usuário final, juntamente com um código QR; Aqui, o usuário final pode digitalizar o código ou inserir as informações manualmente.
+**Importante:** A InterSystems não recomenda esta opção. Consulte o seguinte cuidado para obter mais detalhes. 
+
+**CUIDADO:** A seguir estão as preocupações críticas de segurança ao usar a autenticação TOTP de dois fatores: 
+-  Não transmita a chave secreta ou o código QR em um ambiente não seguro. A transmissão fora de banda é preferível à transmissão mesmo em uma rede segura. (A chave secreta fornece ao usuário final os meios para fazer login no InterSystems IRIS ou em um aplicativo InterSystems IRIS. Se você e seus usuários finais não garantirem a segurança da chave secreta, um invasor poderá obter acesso a ela, o que a torna inútil para a segurança.) 
+- Ao configurar a autenticação TOTP de dois fatores para sua organização, a InterSystems recomenda fortemente que você forneça a chave secreta para cada usuário final pessoalmente ou por telefone, ou que você faça com que o usuário final escaneie o código QR na presença física de um administrador. Isso oferece a oportunidade de autenticar o indivíduo que obtém a chave secreta. Entregar a chave secreta pela rede aumenta a possibilidade de expô-la. Isso inclui exibir a chave secreta para o usuário final quando ele fizer login pela primeira vez em um aplicativo da web, console ou terminal; isso também inclui a exibição do código QR para o usuário final quando ele faz login pela primeira vez em um aplicativo da web.
+ ![[Pasted image 20240724134358.png]]
+
+**Nota:** Se você estiver usando a autenticação TOTP de dois fatores e desejar gerar códigos QR, o Java 1.7 ou superior deve estar em execução no servidor InterSystems IRIS. Sem Java, o InterSystems IRIS pode usar a autenticação TOTP de dois fatores, mas o usuário final insere os valores do emissor, da conta e da chave manualmente no dispositivo de autenticação ou no aplicativo.
+### Configure Two-Factor Authentication for the Server
+As etapas na configuração da autenticação de dois fatores para o servidor InterSystems IRIS são: 
+1. Habilite e configure a autenticação de dois fatores para a instância como um todo. Você pode configurar a instância para usar a autenticação de texto SMS, a autenticação TOTP ou ambas. 
+2. Para autenticação de texto SMS, configure o(s) provedor(es) de serviços de telefonia móvel, se necessário. Isso inclui: 
+ - Adicionar quaisquer provedores de serviços de telefonia móvel, se necessário, e não estiver incluído na lista de provedores padrão. 
+ - Alterar as informações de configuração conforme necessário para qualquer provedor existente (padrão ou adicionado)
+#### Enable and Configure Two-Factor Authentication Settings for an Instance
+Ao configurar a autenticação de dois fatores para uma instância (servidor) do InterSystems IRIS, você pode habilitar uma ou ambas: 
+- Autenticação de senha de uso único baseada em tempo de dois fatores (autenticação TOTP) 
+- Autenticação de texto SMS de dois fatores 
+
+Para habilitar qualquer forma de autenticação de dois fatores, o procedimento é: 
+1. Na página inicial do Portal de Gerenciamento, vá para a página Opções de Autenticação/Sessão da Web (Administração > Segurança do Sistema > Segurança do Sistema > Opções de Autenticação/Sessão da Web). 
+2. Para habilitar a autenticação TOTP de dois fatores, na página Opções de autenticação/sessão da Web, marque a caixa de seleção Permitir autenticação de senha de uso único baseada em tempo de dois fatores. Isso exibe o campo Emissor de senha de uso único baseado em tempo de dois fatores; aqui, insira uma string para identificar esta instância do InterSystems IRIS. 
+3. Para ativar a autenticação de texto SMS de dois fatores, na página Opções de autenticação/sessão da Web, marque a caixa de seleção Permitir autenticação de texto SMS de dois fatores. Isso exibe os seguintes campos: 
+	- Tempo limite de dois fatores (segundos) — Tempo limite opcional em segundos para inserir o token de segurança único. 
+	- Nome DNS do servidor SMTP — O nome DNS (Domain Name Service) do servidor SMTP (Simple Mail Transfer Protocol) que esta instância do InterSystems IRIS está usando para enviar mensagens de texto SMS, como smtp.example.com (obrigatório). 
+	- De (endereço) — Endereço a ser exibido no campo "De" da mensagem (obrigatório). 
+	- Nome de usuário SMTP — Nome de usuário opcional para autenticação SMTP (se o servidor SMTP exigir). 
+	- Senha SMTP e Senha SMTP (confirmar) — Senha opcional (inserida e confirmada) para autenticação SMTP (se o servidor SMTP exigir).
+4. Clique em Salvar. 
+5. Se a instância for compatível com autenticação de texto SMS, configure os provedores de serviços de telefonia móvel conforme necessário. Esses procedimentos são descritos na próxima seção
+
+Depois de concluir esse processo para a própria instância, talvez seja necessário executar outra configuração, como para os serviços da instância, aplicativos Web e aplicativos cliente-servidor; Você precisará configurar os usuários da instância. A Visão geral da configuração da autenticação de dois fatores fornece orientações gerais sobre isso.
+#### Configure Mobile Phone Service Providers
+Os tópicos relacionados à configuração de provedores de serviços de telefonia móvel são:
+1. Create or Edit a Mobile Phone Service Provider
+2. Delete a Mobile Phone Service Provider
+3. Predefined Mobile Phone Service Providers
+### Enable or Disable Two-Factor Authentication for a Service
+### Configure Web Applications for Two-Factor Authentication
+### Configure an End-User for Two-Factor Authentication
+### Configure Bindings Clients for Two-Factor Authentication
+#### Java and JDBC
+#### .NET
+#### ODBC
 ## JSON Web Token (JWT) Authentication
 
 ## Services
