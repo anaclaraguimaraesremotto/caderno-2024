@@ -37,3 +37,9 @@
 	- The %UnitTest Framework for InterSystems IRIS
 6. [[AENCRYPT]]
 	- Encryption
+7. [[ACLASSREF]]
+	- Locating and Exploring Class Reference Documentation
+8. [[ASECURING]]
+	- 
+9. [[ASCWL]]
+	- 
