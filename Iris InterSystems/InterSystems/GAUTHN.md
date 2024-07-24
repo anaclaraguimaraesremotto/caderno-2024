@@ -427,22 +427,236 @@ Ao estabelecer uma conexão usando o servidor InterSystems IRIS Telnet para Wind
 
 ### About Delegated Authentication
 #### Delegated Authentication Background
+O InterSystems IRIS suporta autenticação delegada, que permite implementar mecanismos personalizados para substituir as atividades de autenticação e gerenciamento de funções que fazem parte da segurança da InterSystems, por exemplo, o sistema de autenticação existente de uma empresa. Como desenvolvedor do aplicativo, você controla totalmente o conteúdo do código de autenticação delegada. A autenticação delegada ocorre se uma instância do InterSystems IRIS encontrar uma rotina ZAUTHENTICATE em seu namespace %SYS. Se tal rotina existir, o InterSystems IRIS a usará para autenticar usuários, seja com chamadas para código novo ou existente. O InterSystems IRIS inclui uma rotina, ZAUTHENTICATE.mac, que serve como modelo para criar a rotina ZAUTHENTICATE.
+
+**importante:** Se estiver usando autenticação com HealthShare®, você deve usar a rotina ZAUTHENTICATE fornecida pela InterSystems e não pode escrever sua própria rotina
 #### How Delegated Authentication Works
+Quando um usuário tenta fazer login e o InterSystems IRIS invoca a autenticação delegada, a sequência de eventos é: 
+1. Quando um serviço ou aplicativo usa autenticação delegada, uma tentativa de login resulta automaticamente em uma chamada para a rotina ZAUTHENTICATE. O código de autenticação nessa rotina pode ser qualquer ObjectScript definido pelo usuário, métodos de classe ou $ZF código explicativo. 
+2. A próxima etapa depende se a autenticação foi bem-sucedida ou não e se este é ou não o primeiro login usando ZAUTHENTICATE: 
+	- Se ZAUTHENTICATE for bem-sucedido e esta for a primeira vez que o usuário foi autenticado por meio deste mecanismo, o usuário será adicionado à lista de usuários do InterSystems IRIS com um tipo de "Usuário delegado". Se ZAUTHENTICATE definir funções ou outras características, elas se tornarão parte das propriedades do usuário. 
+	- Se ZAUTHENTICATE for bem-sucedido e este não for o primeiro login, ZAUTHENTICATE atualizará as propriedades do usuário. •
+	- Se ZAUTHENTICATE falhar, o usuário receberá um erro de acesso negado e não poderá acessar o sistema. Para determinar por que isso ocorreu: 
+		- a. Verifique o campo Motivo da falha ao fazer login no Perfil do usuário. 
+		- b. Para obter informações mais detalhadas, verifique o log de auditoria do evento %System/%Login/LoginFailure relevante. Se a auditoria ou o evento LoginFailure não estiverem habilitados, talvez seja necessário habilitar ambos e, em seguida, recriar as circunstâncias da falha de logon. 
+3. Se a autenticação de dois fatores estiver habilitada para a instância e os serviços relevantes, haverá uma verificação de que as propriedades PhoneNumber e PhoneProvider do usuário foram definidas. Se essas propriedades forem definidas, a autenticação de dois fatores continuará; Se eles não estiverem definidos, a autenticação de dois fatores não poderá continuar e o usuário não será autenticado. 
+4. Um usuário delegado é listado como tal na coluna Tipo da lista de usuários na página Usuários (Administração do Sistema > Segurança > Usuários). As propriedades do usuário são exibidas como somente leitura no Portal de Gerenciamento e não são editáveis de dentro do InterSystems IRIS (uma vez que todas as informações vêm de fora do InterSystems IRIS). 
+	**Nota:** Um usuário delegado também não pode ser um usuário de senha do InterSystems IRIS.
 ### Overview of Configuring Delegated Authentication
+Para usar a autenticação delegada, as etapas são: 
+1. Crie o código de autenticação definido pelo usuário na rotina ZAUTHENTICATE. Isso pode incluir o uso de autenticação de dois fatores. Essa rotina também pode executar a configuração básica de uma conta de usuário, como especificar funções e outras propriedades do usuário. 
+	Se você estiver usando o HealthShare Health Connect, crie uma rotina ZAUTHENTICATE personalizada, conforme descrito neste guia.
+	
+	Se você estiver usando o HealthShare Unified Care Record, não poderá criar uma versão personalizada do ZAUTHENTICATE para implementar a autenticação delegada porque o Unified Care Record vem com sua própria versão da rotina. Em vez disso, você deve personalizar métodos na classe HS. Local.ZAUTHENTICATE. Para obter mais informações, consulte "Personalizando a autenticação por meio do ZAUTHENTICATE local" no livro Autenticando usuários do HealthShare. 
+2. Habilite a autenticação delegada para a instância do InterSystems IRIS na página Opções de autenticação. 
+3. Habilite a autenticação delegada para os serviços, aplicativos ou ambos relevantes, conforme necessário. 
+4. Opcionalmente, habilite a autenticação de dois fatores para a instância InterSystems IRIS e, se necessário, para aplicativos da web e aplicativos cliente-servidor. 
+
+Por exemplo, para usar a autenticação delegada para o Portal de Gerenciamento de uma instância, as etapas são: 
+1. Crie o código de autenticação definido pelo usuário em ZAUTHENTICATE. 
+2. Habilite a autenticação delegada para a instância do InterSystems IRIS como um todo. 
+3. Habilite a autenticação delegada para o conjunto de aplicativos /csp/sys*
 ### Create Delegated (User-Defined) Authentication Code
+Esta seção descreve vários aspectos da criação de sua própria rotina ZAUTHENTICATE:
+- Authentication Code Fundamentals 
+- Signature 
+- Authentication Code
+- Set Values for Roles and Other User Characteristics
+- Return Value and Error Messages
 #### Authentication Code Fundamentals
+A InterSystems fornece uma rotina de amostra, ZAUTHENTICATE.mac, que você pode copiar e modificar. Essa rotina faz parte do exemplo Samples-Security no GitHub (https://github.com/intersystems/Samples-Security). Você pode baixar o exemplo inteiro conforme descrito em Download de exemplos para uso com o InterSystems IRIS , mas pode ser mais conveniente simplesmente abrir a rotina no GitHub e copiar seu conteúdo. 
+Para criar seu próprio ZAUTHENTICATE.mac: 
+1. Para usar ZAUTHENTICATE.mac como modelo, copie seu conteúdo e salve-o em uma rotina ZAUTHENTICATE.mac no namespace %SYS. 
+2. Examine os comentários no exemplo ZAUTHENTICATE.mac. Eles fornecem diretrizes importantes sobre como implementar uma versão personalizada da rotina. 
+3. Edite sua rotina adicionando código de autenticação personalizado e qualquer código desejado para definir as características da conta do usuário. 
+
+**CUIDADO:** Como o InterSystems IRIS não impõe restrições ao código de autenticação em ZAUTHENTICATE, o programador de aplicativos é responsável por garantir que esse código seja suficientemente seguro.
 #### Signature
+A assinatura de ZAUTHENTICATE é:
+- ObjectScript
+	```
+	ZAUTHENTICATE(ServiceName, Namespace, Username, Password, Credentials,
+	 Properties) PUBLIC { 
+		// authentication code 
+		// optional code to specify user account properties and roles 
+	}
+	```
+
+	onde: 
+	- ServiceName — Uma string que representa o nome do serviço através do qual o usuário está se conectando ao InterSystems IRIS, como %Service_Console ou %Service_WebGateway. 
+	- Namespace — Uma string que representa o namespace no servidor InterSystems IRIS com o qual uma conexão está sendo estabelecida. Isso é para uso com o serviço %Service_Bindings, como com Studio ou ODBC. 
+	- Nome de usuário — Uma string que representa o nome da conta inserida pelo usuário que deve ser validada pelo código da rotina. 
+	- Senha — Uma string que representa a senha inserida pelo usuário que deve ser validada. 
+	- Credenciais — Aprovado por referência. Não implementado nesta versão do InterSystems IRIS.
+	- Propriedades — Passado por referência. Uma matriz de valores retornados que define as características da conta nomeada por Nome de usuário. 
+	
+	Quando o InterSystems IRIS chama ZAUTHENTICATE, ele tem valores para esses argumentos e os fornece para a rotina. 
+	
+	**Nota:** Em versões mais antigas dos produtos InterSystems, ZAUTHENTICATE recebeu quatro argumentos. Para compatibilidade com versões anteriores, você ainda pode usar a versão de quatro argumentos. Se você estiver atualizando seu código da versão antiga para a nova, observe que os novos argumentos são o segundo e o quinto: Namespace e Credentials.
 #### Authentication Code
 
+O conteúdo do código de autenticação é específico do aplicativo. Se a autenticação for bem-sucedida, a rotina deverá retornar a macro $OK; caso contrário, ele deve retornar um código de erro. Consulte Valor Retornado e Mensagens de Erro para obter mais informações sobre valores retornados. 
+
+**CUIDADO:** Como o InterSystems IRIS não impõe e não pode colocar nenhuma restrição no código de autenticação em ZAUTHENTICATE, o programador do aplicativo é responsável por garantir que esse código seja suficientemente seguro.
+
 1. The GetCredentials Entry Point
-2. The SendTwoFactorToken Entry Point
+	ZAUTHENTICATE inclui um ponto de entrada GetCredentials. Esse ponto de entrada é chamado sempre que a autenticação delegada é habilitada para um serviço e é chamado antes que o usuário seja solicitado a fornecer um nome de usuário e uma senha. Em vez de obter um nome de usuário e senha do usuário, o código na função (criada pelo desenvolvedor do aplicativo) especifica o nome de usuário e a senha. O nome de usuário e a senha retornados são autenticados da maneira normal, como se o usuário os tivesse inserido. Um possível uso desse mecanismo é fornecer um nome de usuário e senha no ponto de entrada e, em seguida, no código de autenticação, 4roles para o processo. 
+	
+	O nome de usuário e a senha retornados desse ponto de entrada podem ser obtidos por qualquer mecanismo que o desenvolvedor do aplicativo escolher. Eles podem vir de um global, de uma chamada DLL ou LDAP externa ou simplesmente ser definidos dentro da rotina. O desenvolvedor do aplicativo pode até fornecer código para solicitar o nome de usuário e a senha, como em uma conexão de terminal ou com uma página de login. 
+	
+	Quando há uma chamada para o ponto de entrada GetCredentials, o valor retornado e outros fatores determinam o que acontece a seguir: 
+	- Se o código definir os valores de Nome de usuário e Senha e também retornar um status de êxito ($OK), então: 
+		- Não há solicitação adicional de nome de usuário/senha. 
+		- O processo de autenticação continua. 
+		**Importante:** Se o ponto de acesso retornar $OK, seu código deverá definir os valores de Nome de usuário e Senha. Caso contrário, o acesso ao sistema será negado ao usuário e um erro será gravado no log de auditoria. 
+		
+	- Se o ponto de entrada retornar o status de erro $SYSTEM. Status.Error ($$GetCredentialsFailed), a solicitação normal de nome de usuário/senha continua. 
+	- Se o ponto de entrada retornar qualquer outro status de erro, então: 
+		-  O usuário tem acesso negado ao sistema. 
+		- O erro é registrado no log de auditoria. 
+	No exemplo a seguir de um ponto de entrada GetCredentials, o código executa ações diferentes para serviços diferentes: 
+	-  Para %Service_Console, ele não solicita nenhuma informação ao usuário e define o nome de usuário e a senha do processo como _SYSTEM e SYS, respectivamente. 
+	- Para %Service_Bindings, força o usuário a fornecer um nome de usuário e senha. 
+	- Para aplicações web, verifica se a aplicação em uso é a aplicação /csp/ samples; se for esse aplicativo, ele define o nome de usuário e a senha como AdminUser e Test. Para todos os outros aplicativos da web, ele nega o acesso. 
+	- Para qualquer outro serviço, nega o acesso.
+	
+	Por fim, o ponto de entrada Erro executa a limpeza conforme necessário.
+	
+	O código é: 
+	![[Pasted image 20240724111602.png]]
+	Para obter mais detalhes, consulte os comentários desse ponto de entrada em ZAUTHENTICATE.mac.
+	
+1. The SendTwoFactorToken Entry Point
+	ZAUTHENTICATE inclui um ponto de entrada SendTwoFactorToken. Esse ponto de entrada é para uso com autenticação de dois fatores. Se estiver definido e a instância do InterSystems IRIS tiver a autenticação de dois fatores habilitada, você poderá substituir a configuração padrão do sistema para o formato da mensagem e do token que a instância envia para o celular do usuário. Isso permite mensagens que podem variar de acordo com o aplicativo, mesmo na mesma instância do InterSystems IRIS. 
+	
+	Para obter mais detalhes e um exemplo de como usar esse ponto de entrada, consulte esse ponto de entrada no exemplo ZAUTHENTICATE.mac.
 ### Set Values for Roles and Other User Characteristics
+Se a autenticação inicial for bem-sucedida, ZAUTHENTICATE poderá estabelecer as funções e outras características para o usuário autenticado. Para logons subsequentes, ZAUTHENTICATE pode atualizar esses elementos do registro do usuário. 
+
+Para que isso aconteça, o código em ZAUTHENTICATE define os valores da matriz Properties. (Properties é passado por referência a ZAUTHENTICATE.) Normalmente, a origem dos valores que estão sendo definidos é um repositório de informações do usuário que está disponível para ZAUTHENTICATE.
+
 1. User Properties
-2. The User Information Repository
+	Os elementos na matriz Properties são:
+	-  Properties("Comment") — Any text 
+	- Properties("FullName") — The first and last name of the user 
+	- Properties("NameSpace") — The default namespace for a Terminal login 
+	- Properties("Roles") — The comma-separated list of roles that the user holds in InterSystems IRIS 
+	- Properties("Routine") — The routine that is executed for a Terminal login 
+	- Properties("Password") — The user’s password 
+	- Properties("Username") — The user’s username
+	- Properties("PhoneNumber") — The user’s mobile phone number, for use with two-factor authentication 
+	- Properties("PhoneProvider") — The user’s mobile phone’s service provider, for use with two-factor authentication
+	
+	Cada um desses elementos é descrito com mais detalhes em uma das seções a seguir. 
+	
+	**Nota:** O valor de cada elemento na matriz properties determina o valor de sua propriedade associada para o usuário que está sendo autenticado. Não é possível usar apenas um subconjunto das propriedades ou manipular seus valores após a autenticação
+	
+	1. Comment
+		Se ZAUTHENTICATE definir o valor de Properties("Comment"), essa string se tornará o valor da propriedade Comment da conta de usuário no InterSystems IRIS. (Essa propriedade é descrita em Propriedades da conta de usuário.) Se nenhum valor for passado de volta para a rotina de chamada, o valor de Comment para a conta de usuário será uma cadeia de caracteres nula e o campo relevante no Portal de Gerenciamento não terá conteúdo
+	2. FullName
+		Se ZAUTHENTICATE definir o valor de Properties("FullName"), essa string se tornará o valor da propriedade Full name da conta de usuário no InterSystems IRIS. (Essa propriedade é descrita em Propriedades da conta de usuário.) Se nenhum valor for passado de volta para a rotina de chamada, o valor de Nome completo da conta de usuário será uma cadeia de caracteres nula e o campo relevante no Portal de Gerenciamento não terá conteúdo
+	3. NameSpace
+		Se ZAUTHENTICATE definir o valor de Properties("Namespace"), essa string se tornará o valor da propriedade Startup Namespace da conta de usuário no InterSystems IRIS. (Essa propriedade é descrita em Propriedades da conta de usuário.) Se nenhum valor for passado de volta para a rotina de chamada, o valor do Namespace de Inicialização para a conta de usuário será uma cadeia de caracteres nula e o campo relevante no Portal de Gerenciamento não reterá nenhum conteúdo. 
+		
+		Uma vez conectado ao InterSystems IRIS, o valor do Namespace de Inicialização (portanto, o de Properties("Namespace")) determina o namespace inicial para qualquer usuário autenticado para acesso local (como para Console, Terminal ou Telnet). Se o Namespace de inicialização não tiver valor (já que Properties("Namespace") não tiver valor), o namespace inicial de qualquer usuário autenticado para acesso local será determinado da seguinte maneira: 
+		1. Se o namespace USER existir, esse será o namespace inicial. 
+		2. Se o namespace USER não existir, o namespace inicial será o namespace %SYS. 
+		
+		**Observação**:** se o usuário não tiver os privilégios apropriados para o namespace inicial, o acesso será negado.
+	4. Password
+		Se ZAUTHENTICATE definir o valor de Properties("Password"), essa string se tornará o valor da propriedade Password da conta de usuário no InterSystems IRIS. (Essa propriedade é descrita em Propriedades da conta de usuário.) Se nenhum valor for passado de volta para a rotina de chamada, o valor de Password para a conta de usuário será uma cadeia de caracteres nula e o campo relevante no Portal de Gerenciamento não terá conteúdo
+	5. Roles
+		Se ZAUTHENTICATE definir o valor de Properties("Roles"), essa cadeia de caracteres especificará as funções às quais um usuário está atribuído; Esse valor é uma cadeia de caracteres que contém uma lista de funções delimitada por vírgulas. Se nenhum valor for passado de volta para a rotina de chamada, o valor de Funções para a conta de usuário será uma cadeia de caracteres nula e o campo relevante no Portal de Gerenciamento não reterá conteúdo. As informações sobre as funções de um usuário estão disponíveis na guia Funções da página Editar usuário de um usuário. 
+		
+		Se alguma função retornada em Properties("Roles") não estiver definida, o usuário não será atribuído à função. 
+		
+		Portanto, o usuário conectado é atribuído a funções da seguinte maneira:
+		- Se uma função estiver listada em Propriedades ("Funções") e for definida pela instância do InterSystems IRIS, o usuário será atribuído à função. 
+		- Se uma função estiver listada em Propriedades ("Funções") e não for definida pela instância do InterSystems IRIS, o usuário não será atribuído à função. 
+		- Um usuário é sempre atribuído às funções associadas ao usuário _PUBLIC. Um usuário também tem acesso a todos os recursos públicos. Para obter informações sobre o usuário _PUBLIC, consulte A conta _PUBLIC; para obter informações sobre recursos públicos, consulte Serviços e seus recursos.
+		
+	6. Routine
+		Se ZAUTHENTICATE definir o valor de Properties("Routine"), essa string se tornará o valor da propriedade Startup Tag^Routine da conta de usuário no InterSystems IRIS. (Essa propriedade é descrita em Propriedades da conta de usuário.) Se nenhum valor for passado de volta para a rotina de chamada, o valor de Marca de Inicialização^Rotina para a conta de usuário será uma cadeia de caracteres nula e o campo relevante no Portal de Gerenciamento não contém conteúdo. 
+		
+		Se Properties("Routine") tiver um valor, esse valor especificará a rotina a ser executada automaticamente após o login em um serviço do tipo terminal (como para Console, Terminal ou Telnet). Se Properties("Routine") não tiver valor, o login iniciará a sessão do Terminal no modo programador.
+	7. Username
+		Se ZAUTHENTICATE retornar a propriedade Username, o valor de Username será gravado no banco de dados de segurança após qualquer processamento na função; Isso fornece a chance de modificar o valor que o usuário inseriu no prompt. Se ZAUTHENTICATE não retornar a propriedade Username, o valor da propriedade será gravado no banco de dados de segurança conforme inserido. 
+		
+		Se ZAUTHENTICATE definir o valor de Properties("Username"), essa string se tornará o valor da propriedade Name da conta de usuário no InterSystems IRIS. (Essa propriedade é descrita em Propriedades da conta de usuário.) Isso fornece ao programador de aplicativos a oportunidade de normalizar o conteúdo fornecido pelo usuário final no prompt de login. 
+		
+		Se não houver nenhuma chamada explícita que passe o valor de Properties("Username") de volta para a rotina de chamada, não haverá normalização e o valor inserido pelo usuário final no prompt servirá como o valor da propriedade Name da conta de usuário sem qualquer modificação
+	8. PhoneNumber and PhoneProvider
+		Essas são propriedades associadas à autenticação de dois fatores. 
+		
+		Se ZAUTHENTICATE definir o valor de Properties("PhoneNumber") e Properties("PhoneProvider"), eles serão gravados no banco de dados InterSystems IRIS para o usuário como o número de telefone celular e o provedor de serviços de telefonia móvel do usuário. Se estes não forem passados de volta para a rotina de chamadas, então o número de telefone e o provedor de serviços gravados no banco de dados InterSystems IRIS são uma string nula. Portanto, para usar a autenticação de dois fatores com autenticação delegada, você deve fornecer ambos
+1. The User Information Repository
+	ZAUTHENTICATE pode se referir a qualquer tipo de repositório de informações do usuário, como um arquivo global ou externo. Cabe ao código na rotina definir quaisquer propriedades externas na matriz Properties para que o usuário autenticado possa ser criado ou atualizado com essas informações. Por exemplo, enquanto um repositório pode incluir informações como funções e namespaces, o código ZAUTHENTICATE deve disponibilizar essas informações para o InterSystems IRIS. 
+	
+	Se as informações no repositório forem alteradas, essas informações só serão propagadas de volta para as informações do usuário do InterSystems IRIS se houver código em ZAUTHENTICATE para executar esta ação. Além disso, se houver esse código, as alterações nas funções dos usuários devem ocorrer no repositório; se você alterar as funções de um usuário durante uma sessão, a alteração não entrará em vigor até o próximo login, momento em que as funções do usuário serão redefinidas por ZAUTHENTICATE
 #### Return Value and Error Messages
+
+A rotina retorna um dos seguintes valores: 
+- Sucesso — $OK. Isso indica que a combinação de nome de usuário/senha foi autenticada com sucesso 
+- Falha — $SYSTEM. Status.Error($ERRORMESSAGE). Isso indica que a autenticação falhou. 
+
+ZAUTHENTICATE pode retornar mensagens de erro definidas pelo sistema ou específicas do aplicativo. Todas essas mensagens usam o método Error do %SYSTEM. Classe de status. Esse método é invocado como $SYSTEM. Status.Error e usa um ou dois argumentos, dependendo da condição de erro. 
+
+As mensagens de erro definidas pelo sistema disponíveis são: 
+-  $SYSTEM. Status.Error($$AccessDenied) — mensagem de erro de "Acesso negado" 
+- $SYSTEM. Status.Error($$InvalidUsernameOrPassword) — Mensagem de erro de "Nome de usuário ou senha inválidos" 
+- $SYSTEM. Status.Error($$UserNotAuthorizedOnSystem,Username) — Mensagem de erro "O nome de usuário do usuário não está autorizado" 
+- $SYSTEM. Status.Error($$UserAccountIsDisabled,Username) — Mensagem de erro "A conta do nome de usuário está desativada" 
+- $SYSTEM. Status.Error($$UserInvalidUsernameOrPassword,Username) — Mensagem de erro de "Nome de usuário nome ou senha inválidos" 
+- $SYSTEM. Status.Error($$UserLoginTimeout) — Mensagem de erro de "Tempo limite de login" 
+- $SYSTEM. Status.Error($$UserCTRLC) — Mensagem de erro de "Login abortado" 
+- $SYSTEM. Status.Error($$UserDoesNotExist,Username) — Mensagem de erro de "O nome de usuário não existe" 
+- $SYSTEM. Status.Error($$UserInvalid,Username) — Mensagem de erro de "Nome de usuário O nome de usuário é inválido" 
+- $SYSTEM. Status.Error($$PasswordChangeRequired) — Mensagem de erro de "Alteração de senha necessária" 
+- $SYSTEM. Status.Error($$UserAccountIsExpired,Username) — Mensagem de erro "A conta do nome de usuário expirou" 
+- $SYSTEM. Status.Error($$UserAccountIsInactive,Username) — Mensagem de erro "A conta do nome de usuário está inativa" 
+- $SYSTEM. Status.Error($$UserInvalidPassword) — Mensagem de erro de "Senha inválida" 
+- $SYSTEM. Status.Error($$ServiceDisabled,ServiceName) — Mensagem de erro "Os logins para o nome do serviço estão desativados" 
+- $SYSTEM. Status.Error($$ServiceLoginsDisabled) — Mensagem de erro de "Os logins estão desativados" 
+- $SYSTEM. Status.Error($$ServiceNotAuthorized,ServiceName) — Mensagem de erro de "Usuário não autorizado para serviço"
+
+Para gerar uma mensagem personalizada, use o $SYSTEM. Status.Error(), passando a macro $GeneralError e especificando qualquer texto personalizado como o segundo argumento. Por exemplo:
+
+```$SYSTEM.Status.Error($$$GeneralError,"Any text here")```
+
+Observe que, quando uma mensagem de erro é retornada ao chamador, ela é registrada no banco de dados de auditoria (se a auditoria de eventos LoginFailure estiver ativada). No entanto, a única mensagem de erro que o usuário vê é $SYSTEM. Status.Error($$AccessDenied). No entanto, o usuário também vê a mensagem para o erro $PasswordChangeRequired. Retorne esse erro se quiser que o usuário mude da senha atual para uma nova.
 ### Set Up Delegated Authentication
+Depois de criar uma rotina ZAUTHENTICATE para executar a autenticação (e, opcionalmente, tarefas de autorização), a próxima etapa é habilitá-la para os serviços ou aplicativos relevantes da instância. Este procedimento é: 
+1. Habilite a autenticação delegada para toda a instância. Na página Opções de Autenticação/Sessão da Web (Administração do Sistema > Segurança > Segurança do Sistema > Opções de Autenticação/Sessão da Web), selecione Permitir autenticação delegada e clique em Salvar. 
+	
+	Com a autenticação delegada habilitada para a instância, uma caixa de seleção Delegada é exibida na página Editar Serviço para serviços relevantes e na página Editar Aplicativo Web para esses aplicativos. 
+
+2. Habilite a autenticação delegada para serviços e aplicativos, conforme apropriado. Os seguintes serviços oferecem suporte à autenticação delegada: 
+- %Service_Bindings 
+- %Service_CallIn 
+- %Service_ComPort 
+- %Service_Console 
+- -%Service_Login 
+- %Service_Terminal 
+- %Service_Telnet 
+- %Service_WebGateway
+
+Eles se enquadram em várias categorias de modos de acesso: 
+
+- Acesso local — 
+	%Service_CallIn, %Service_ComPort, %Service_Console, %Service_Login, %Service_Terminal, %Service_Telnet
+	Para usar a autenticação delegada com conexões locais, habilite-a para o serviço. 
+- Acesso cliente-servidor —
+	%Service_Bindings 
+	Para usar a autenticação delegada com conexões cliente-servidor, habilite-a para o serviço.
+- Acesso à Web — 
+	%Service_WebGateway 
+	Para usar a autenticação delegada com conexões baseadas na Web, habilite-a para o aplicativo Web. Você também pode habilitá-lo para o Web Gateway ativando o serviço %Service_WebGateway
 
 ### After Delegated Authentication Succeeds
+
+Depois que o usuário se autentica, dois tópicos importantes são:
+-  The State of the System
+- Change Passwords
 #### The State of the System
 #### Change Passwords
 ## Use LDAP with Delegated Authentication or Other Mechanisms
